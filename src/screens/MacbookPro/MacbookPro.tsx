@@ -1,15 +1,7 @@
 import React, { useState } from "react";
-import { ArrowRightIcon, VideoIcon } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { supabase } from "../../lib/supabase";
-
-const companyLogos = [
-  {
-    name: "SCATR",
-    src: "https://c.animaapp.com/mk3i7h91OjH2GA/img/frame-3.svg",
-  },
-];
 
 const socialLinks = [
   {
@@ -26,7 +18,7 @@ const socialLinks = [
   },
 ];
 
-export const MacbookPro = (): JSX.Element => {
+export const MacbookPro = (): React.JSX.Element => {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -66,7 +58,7 @@ export const MacbookPro = (): JSX.Element => {
 
     try {
       // Insert email into Supabase
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("agen8_wait")
         .insert([{ email }])
         .select();
@@ -285,7 +277,9 @@ export const MacbookPro = (): JSX.Element => {
             <div className="w-full h-full bg-[#949494] rounded-[8px] flex items-center justify-center relative group cursor-pointer hover:bg-[#858585] transition-colors">
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <VideoIcon className="w-10 h-10 text-[#949494] ml-1" />
+                  <svg className="w-10 h-10 text-[#949494] ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
                 </div>
               </div>
             </div>
