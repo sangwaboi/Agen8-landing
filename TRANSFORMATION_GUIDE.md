@@ -84,6 +84,451 @@ project-root/
 
 ---
 
+## 🎯 THE MOST IMPORTANT FILE: Understanding Anima's Component Structure
+
+### What Anima Generates
+
+When you export from Figma using Anima, you get a **very specific file structure** that looks like this:
+
+```
+src/
+└── screens/
+    └── MacbookPro/              # Or whatever you named your Figma frame
+        ├── index.ts             # Barrel export file
+        └── MacbookPro.tsx       # THE MAIN COMPONENT - This is everything!
+```
+
+### The MacbookPro.tsx File - Anatomy of Anima Code
+
+This single file contains **your entire page design**. Here's what Anima typically generates:
+
+```typescript
+import React from "react";
+
+export const MacbookPro = (): JSX.Element => {  // ← Wrong type for React 19!
+  // ❌ NO STATE - No useState, no hooks, nothing interactive
+  // ❌ NO FUNCTIONS - No event handlers, no logic
+  
+  return (
+    <div className="bg-[#fee7d2] w-[1512px] h-[4254px]">
+      {/* ❌ FIXED DESKTOP SIZE - No responsiveness */}
+      
+      {/* ❌ ABSOLUTE POSITIONING EVERYWHERE */}
+      <div className="absolute top-[41px] left-[54px]">
+        {/* Header */}
+      </div>
+      
+      <div className="absolute top-[208px] left-[calc(50%-433px)]">
+        {/* Hero section */}
+      </div>
+      
+      {/* ❌ EXTERNAL CDN IMAGES */}
+      <img src="https://c.animaapp.com/xyz/img/logo.png" />
+      
+      {/* ❌ NON-FUNCTIONAL BUTTONS */}
+      <button className="...">Join waitlist</button>  {/* Does nothing! */}
+      
+      {/* ❌ STATIC TEXT - No dynamic content */}
+      <div className="[font-family:'Microsoft_Sans_Serif',Helvetica]">
+        Static text here
+      </div>
+    </div>
+  );
+};
+```
+
+### Critical Problems in This File
+
+#### 1. **Everything is in ONE component** (1000+ lines)
+- No component breakdown
+- No reusability
+- Hard to maintain
+
+#### 2. **Desktop-only absolute positioning**
+```typescript
+// Every element looks like this:
+<div className="absolute top-[474px] left-[calc(50%-394px)] w-[789px]">
+```
+- Fixed pixel positioning
+- No mobile layout
+- Breaks on smaller screens
+
+#### 3. **Zero interactivity**
+```typescript
+// Buttons that do nothing:
+<Button className="...">Join the waitlist</Button>
+
+// No state management:
+// const [isModalOpen, setIsModalOpen] = useState(false);  ← MISSING!
+
+// No event handlers:
+// onClick={() => setIsModalOpen(true)}  ← MISSING!
+```
+
+#### 4. **Inline style utilities**
+```typescript
+// Anima generates these verbose inline Tailwind classes:
+className="[font-family:'Libre_Baskerville',Helvetica] 
+           font-normal text-transparent text-[64px] 
+           tracking-[-4.92px] leading-[75.1px]"
+
+// Instead of organized component patterns
+```
+
+#### 5. **External CDN dependencies**
+```typescript
+// Images from Anima CDN:
+src="https://c.animaapp.com/mk3i7h91/img/group-86.png"
+
+// Will break if Anima changes/deletes them!
+```
+
+#### 6. **Wrong TypeScript types**
+```typescript
+export const MacbookPro = (): JSX.Element => {  // ← Breaks in React 19!
+
+// Should be:
+export const MacbookPro = (): React.JSX.Element => {
+```
+
+### The index.ts Barrel Export
+
+Anima also generates a barrel export file:
+
+```typescript
+// screens/MacbookPro/index.ts
+export { MacbookPro } from "./MacbookPro";
+```
+
+This is actually a **good pattern** - keep it! It allows clean imports:
+```typescript
+import { MacbookPro } from "./screens/MacbookPro";
+```
+
+---
+
+## 🔄 HOW TO TRANSFORM THE ANIMA COMPONENT
+
+### Step-by-Step Transformation of MacbookPro.tsx
+
+#### STEP 1: Fix the Type Definition
+```typescript
+// BEFORE:
+export const MacbookPro = (): JSX.Element => {
+
+// AFTER:
+export const MacbookPro = (): React.JSX.Element => {
+```
+
+#### STEP 2: Add React Imports and State
+```typescript
+// BEFORE (Anima generates):
+import React from "react";
+
+export const MacbookPro = (): React.JSX.Element => {
+  return (
+    <div>...</div>
+  );
+};
+
+// AFTER (Add interactivity):
+import React, { useState, useEffect } from "react";
+import { Button } from "../../components/ui/button";
+import { Card } from "../../components/ui/card";
+import { supabase } from "../../lib/supabase";
+
+export const MacbookPro = (): React.JSX.Element => {
+  // Add all state management
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+  
+  // Add event handlers
+  const handleWaitlistSubmit = async (e: React.FormEvent) => {
+    // Implementation here
+  };
+  
+  return (
+    <div>...</div>
+  );
+};
+```
+
+#### STEP 3: Transform Main Container from Fixed to Responsive
+```typescript
+// BEFORE (Anima generates):
+<div className="bg-[#fee7d2] w-[1512px] h-[4254px]">
+
+// AFTER (Responsive):
+<div className="bg-[#fee7d2] overflow-hidden w-full min-h-screen relative">
+```
+
+#### STEP 4: Convert Each Section from Absolute to Responsive
+
+**Anima generates sections like this:**
+```typescript
+<div className="absolute top-[208px] left-[calc(50%-433px)] w-[867px]">
+  <h1 className="text-[64px]">infinite POSSIBILITIES</h1>
+</div>
+```
+
+**Transform to mobile-first responsive:**
+```typescript
+<section className="lg:absolute relative 
+                    top-0 lg:top-[208px] 
+                    left-0 lg:left-[calc(50%-433px)] 
+                    w-full lg:w-[867px] 
+                    px-4 lg:px-0 
+                    mt-4 lg:mt-0">
+  <h1 className="text-[32px] sm:text-[48px] lg:text-[64px] text-center">
+    infinite POSSIBILITIES
+  </h1>
+</section>
+```
+
+**The pattern:**
+- `lg:absolute relative` - Mobile uses normal flow, desktop uses absolute
+- `top-0 lg:top-[208px]` - Reset top position for mobile
+- `w-full lg:w-[867px]` - Full width mobile, fixed desktop
+- `px-4 lg:px-0` - Padding mobile, none desktop
+- `mt-4 lg:mt-0` - Margin mobile, none desktop (absolute doesn't need it)
+- Responsive text sizes: `text-[32px] lg:text-[64px]`
+
+#### STEP 5: Make Buttons Interactive
+
+**Anima generates:**
+```typescript
+<Button className="h-[53px] bg-white rounded-xl ...">
+  Join the waitlist
+</Button>
+```
+
+**Transform to interactive:**
+```typescript
+// For modal triggers:
+<Button 
+  onClick={() => setIsWaitlistOpen(true)}
+  className="h-[48px] lg:h-[53px] bg-white rounded-xl ...">
+  <span>Join the waitlist</span>
+  <img src="/resources/Arrow right.svg" alt="arrow" className="w-4 h-4" />
+</Button>
+
+// For external links:
+<Button asChild className="...">
+  <a href="https://calendly.com/..." target="_blank" rel="noopener noreferrer">
+    <span>Try for free</span>
+    <img src="/resources/Arrow right.svg" alt="arrow" className="w-4 h-4" />
+  </a>
+</Button>
+```
+
+#### STEP 6: Add Modal/Form Components
+
+**Anima doesn't generate modals - you add them:**
+```typescript
+return (
+  <div>
+    {/* Main content */}
+    
+    {/* Add modal at the end */}
+    {isWaitlistOpen && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center 
+                      bg-black/50 backdrop-blur-sm px-4">
+        <div className="bg-white rounded-2xl p-6 lg:p-8 max-w-[450px] w-full">
+          {/* Modal content with form */}
+        </div>
+      </div>
+    )}
+  </div>
+);
+```
+
+#### STEP 7: Fix Image Paths
+
+**Anima generates:**
+```typescript
+<img src="https://c.animaapp.com/xyz/img/logo.png" />
+```
+
+**Transform to local:**
+```typescript
+<img src="/resources/logo.png" />  // Must be in public/resources/
+```
+
+**Find and replace all:**
+1. External CDN URLs → `/resources/[filename]`
+2. `/static/` paths → `/resources/`
+3. Move all images to `public/resources/`
+
+#### STEP 8: Add Animations
+
+**Anima generates static elements. Add:**
+```typescript
+// Staggered fade-in for each section
+<header className="translate-y-[-1rem] animate-fade-in opacity-0">
+  {/* Header content */}
+</header>
+
+<section className="translate-y-[-1rem] animate-fade-in opacity-0 
+                    [--animation-delay:200ms]">
+  {/* Hero content */}
+</section>
+
+<section className="translate-y-[-1rem] animate-fade-in opacity-0 
+                    [--animation-delay:400ms]">
+  {/* Next section */}
+</section>
+
+// Hover effects on buttons
+className="hover:scale-105 hover:bg-gray-100 transition-all duration-300"
+```
+
+#### STEP 9: Hide Decorative Elements on Mobile
+
+**Anima generates decorative blur effects and images:**
+```typescript
+<div className="absolute ...">
+  <div className="bg-[#fb6d26] blur-[150px]" />
+</div>
+```
+
+**Add responsive visibility:**
+```typescript
+<div className="hidden lg:block absolute ...">
+  <div className="bg-[#fb6d26] blur-[150px]" />
+</div>
+```
+
+#### STEP 10: Add Mobile-Specific Layouts
+
+**Create mobile-only sections:**
+```typescript
+{/* Desktop navigation - hidden on mobile */}
+<nav className="hidden lg:flex items-center gap-[34px]">
+  <Button>Join waitlist</Button>
+  <Button>Try for free</Button>
+</nav>
+
+{/* Mobile navigation - hidden on desktop */}
+<div className="lg:hidden flex flex-col gap-3 px-4 mt-6">
+  <Button className="w-full">Join waitlist</Button>
+  <Button className="w-full">Try for free</Button>
+</div>
+```
+
+---
+
+## 📊 BEFORE vs AFTER: MacbookPro.tsx Transformation
+
+### BEFORE (Anima-Generated)
+```typescript
+import React from "react";
+
+export const MacbookPro = (): JSX.Element => {
+  return (
+    <div className="bg-[#fee7d2] w-[1512px] h-[4254px]">
+      <div className="absolute top-[41px] left-[54px]">
+        <div className="text-[36px]">agen8</div>
+        <Button className="...">Join the waitlist</Button>
+      </div>
+      
+      <div className="absolute top-[208px] left-[calc(50%-433px)] w-[867px]">
+        <div className="text-[64px]">infinite POSSIBILITIES</div>
+      </div>
+      
+      <img src="https://c.animaapp.com/xyz/img/logo.png" />
+    </div>
+  );
+};
+```
+
+### AFTER (Production-Ready)
+```typescript
+import React, { useState } from "react";
+import { Button } from "../../components/ui/button";
+import { supabase } from "../../lib/supabase";
+
+export const MacbookPro = (): React.JSX.Element => {
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    const { error } = await supabase
+      .from("waitlist")
+      .insert([{ email }]);
+    
+    if (!error) {
+      // Success handling
+    }
+    setIsLoading(false);
+  };
+  
+  return (
+    <div className="bg-[#fee7d2] overflow-hidden w-full min-h-screen relative">
+      {/* Header - Responsive */}
+      <header className="lg:absolute relative top-0 lg:top-[41px] 
+                         left-0 lg:left-[54px] 
+                         flex flex-row items-center justify-between 
+                         px-4 lg:px-0 py-6 lg:py-0 
+                         translate-y-[-1rem] animate-fade-in opacity-0">
+        <div className="text-2xl lg:text-4xl">agen8</div>
+        
+        <nav className="hidden lg:flex items-center gap-[34px]">
+          <Button 
+            onClick={() => setIsWaitlistOpen(true)}
+            className="hover:scale-105 transition-all duration-300">
+            Join the waitlist
+          </Button>
+        </nav>
+      </header>
+      
+      {/* Hero - Responsive */}
+      <section className="lg:absolute relative top-0 lg:top-52 
+                          left-0 lg:left-[calc(50%-433px)] 
+                          w-full lg:w-[867px] 
+                          px-4 lg:px-0 mt-4 lg:mt-0 
+                          translate-y-[-1rem] animate-fade-in opacity-0 
+                          [--animation-delay:200ms]">
+        <h1 className="text-[32px] sm:text-[48px] lg:text-[64px] text-center">
+          infinite POSSIBILITIES
+        </h1>
+      </section>
+      
+      {/* Images - Local assets */}
+      <img src="/resources/logo.png" className="hidden lg:block" />
+      
+      {/* Modal - Interactive */}
+      {isWaitlistOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center 
+                        bg-black/50 backdrop-blur-sm px-4">
+          <div className="bg-white rounded-2xl p-8 max-w-[450px] w-full">
+            <form onSubmit={handleSubmit}>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? "Joining..." : "Join Waitlist"}
+              </Button>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+```
+
+---
+
 ## 🔧 REQUIRED DEPENDENCIES
 
 ### Core Dependencies (package.json)

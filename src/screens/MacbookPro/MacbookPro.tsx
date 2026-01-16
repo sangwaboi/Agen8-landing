@@ -98,10 +98,10 @@ export const MacbookPro = (): React.JSX.Element => {
       className="bg-[#fee7d2] overflow-hidden w-full lg:min-w-[1512px] lg:min-h-[4254px] relative"
       data-model-id="1:46"
     >
-      {/* Background blur effects - Hidden on mobile */}
-      <div className="hidden lg:block absolute top-[1215px] -left-8 w-[1012px] h-[568px]">
-        <div className="top-0 left-0 w-[761px] h-[506px] rounded-[380.5px/253px] absolute bg-[#fb6d26] blur-[150px]" />
-        <div className="top-[62px] left-[251px] w-[761px] h-[506px] rounded-[380.5px/253px] absolute bg-[#fb6d26] blur-[150px]" />
+      {/* Background blur effects - Visible on all devices */}
+      <div className="absolute top-[600px] lg:top-[1215px] left-[50%] -translate-x-1/2 lg:left-[-32px] lg:translate-x-0 w-[400px] lg:w-[1012px] h-[300px] lg:h-[568px]">
+        <div className="top-0 left-0 w-[300px] lg:w-[761px] h-[200px] lg:h-[506px] rounded-[150px/100px] lg:rounded-[380.5px/253px] absolute bg-[#fb6d26] blur-[80px] lg:blur-[150px] opacity-70 lg:opacity-100" />
+        <div className="top-[30px] lg:top-[62px] left-[100px] lg:left-[251px] w-[300px] lg:w-[761px] h-[200px] lg:h-[506px] rounded-[150px/100px] lg:rounded-[380.5px/253px] absolute bg-[#fb6d26] blur-[80px] lg:blur-[150px] opacity-70 lg:opacity-100" />
       </div>
 
       <img
@@ -110,9 +110,9 @@ export const MacbookPro = (): React.JSX.Element => {
         src="https://c.animaapp.com/mk3i7h91OjH2GA/img/group-86.png"
       />
 
-      <div className="hidden lg:block absolute top-[2860px] left-[226px] w-[1296px] h-[537px]">
-        <div className="absolute top-[31px] left-[535px] w-[761px] h-[506px] bg-[#fb6d26] rounded-[380.5px/253px] rotate-180 blur-[150px]" />
-        <div className="top-0 left-0 w-[761px] h-[506px] rounded-[380.5px/253px] rotate-180 absolute bg-[#fb6d26] blur-[150px]" />
+      <div className="absolute top-[1400px] lg:top-[2860px] left-[50%] -translate-x-1/2 lg:left-[226px] lg:translate-x-0 w-[500px] lg:w-[1296px] h-[300px] lg:h-[537px]">
+        <div className="absolute top-[15px] lg:top-[31px] left-[200px] lg:left-[535px] w-[300px] lg:w-[761px] h-[200px] lg:h-[506px] bg-[#fb6d26] rounded-[150px/100px] lg:rounded-[380.5px/253px] rotate-180 blur-[80px] lg:blur-[150px] opacity-70 lg:opacity-100" />
+        <div className="top-0 left-0 w-[300px] lg:w-[761px] h-[200px] lg:h-[506px] rounded-[150px/100px] lg:rounded-[380.5px/253px] rotate-180 absolute bg-[#fb6d26] blur-[80px] lg:blur-[150px] opacity-70 lg:opacity-100" />
       </div>
 
       <div className="hidden lg:block absolute left-[-75px] bottom-0 w-[1662px] h-[982px]">
@@ -124,7 +124,8 @@ export const MacbookPro = (): React.JSX.Element => {
         />
       </div>
 
-      <div className="hidden lg:block top-[226px] left-[calc(50.00%_-_406px)] w-[844px] h-[582px] rounded-[422px/291px] absolute bg-[#fb6d26] blur-[150px]" />
+      {/* Top hero blur - Visible on all devices */}
+      <div className="top-[100px] lg:top-[226px] left-[50%] -translate-x-1/2 lg:left-[calc(50.00%_-_406px)] lg:translate-x-0 w-[400px] lg:w-[844px] h-[250px] lg:h-[582px] rounded-[200px/125px] lg:rounded-[422px/291px] absolute bg-[#fb6d26] blur-[80px] lg:blur-[150px] opacity-60 lg:opacity-100" />
 
       <img
         className="hidden lg:block absolute top-0 left-[calc(50.00%_-_460px)] w-[982px] h-[936px] translate-y-[-1rem] animate-fade-in opacity-0"
@@ -268,7 +269,8 @@ export const MacbookPro = (): React.JSX.Element => {
       </p>
 
       {/* Why agen8? Section */}
-      <section className="lg:absolute relative top-0 lg:top-[900px] left-0 lg:left-[calc(50.00%_-_657px)] w-full lg:w-[1315px] min-h-[500px] lg:h-[715px] mx-4 lg:mx-auto mt-12 lg:mt-0 bg-white rounded-[20px] shadow-[0px_4px_12px_#00000040] flex flex-col items-center pb-8 lg:pb-0">
+      <section className="lg:absolute relative top-0 lg:top-[900px] left-0 lg:left-[calc(50.00%_-_657px)] w-full lg:w-[1315px] min-h-[500px] lg:h-[715px] px-4 lg:px-0 mx-0 lg:mx-auto mt-12 lg:mt-0 flex items-center justify-center">
+        <div className="w-full max-w-[calc(100%-32px)] lg:max-w-none lg:w-full bg-white rounded-[20px] shadow-[0px_4px_12px_#00000040] flex flex-col items-center pb-8 lg:pb-0">
         <h2 className="mt-6 lg:mt-[52px] px-4 lg:px-0 [font-family:'Libre_Baskerville',Helvetica] font-normal text-black text-[28px] lg:text-[40px] text-center tracking-[0] leading-[normal]">
           <span className="tracking-[-1.3px] lg:tracking-[-1.87px]">Why agen</span>
           <span className="italic text-[#ff5500] tracking-[0]">8</span>
@@ -321,6 +323,7 @@ export const MacbookPro = (): React.JSX.Element => {
             <img src="/resources/Arrow right.svg" alt="arrow" className="w-4 h-4 lg:w-5 lg:h-5" />
           </a>
         </Button>
+        </div>
       </section>
 
       {/* Built with teams section */}
@@ -411,7 +414,7 @@ export const MacbookPro = (): React.JSX.Element => {
       {/* Not just these apps section */}
       <section className="lg:absolute relative top-0 lg:top-[2400px] left-0 lg:left-[calc(50.00%_-_657px)] w-full lg:w-[1315px] flex flex-col items-center mt-12 lg:mt-0 px-4 lg:px-0">
         {/* Main container with heading and image inside */}
-        <div className="w-full lg:w-[1315px] min-h-[400px] lg:h-[715px] bg-[#fbfbfa] rounded-[12px] lg:rounded-[20px] shadow-[0px_4px_12px_rgba(0,0,0,0.25)] overflow-hidden flex flex-col">
+        <div className="w-full max-w-[calc(100%-32px)] lg:max-w-none lg:w-[1315px] min-h-[400px] lg:h-[715px] bg-[#fbfbfa] rounded-[12px] lg:rounded-[20px] shadow-[0px_4px_12px_rgba(0,0,0,0.25)] overflow-hidden flex flex-col">
           {/* Header section inside the box */}
           <div className="pt-6 lg:pt-12 px-4 lg:px-20 pb-4 lg:pb-6 text-center">
             <h3 className="[font-family:'Microsoft_Sans_Serif-Regular',Helvetica] font-normal text-black text-[22px] lg:text-[36px] tracking-[0] leading-[normal] mb-2 lg:mb-4">
